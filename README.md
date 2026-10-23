@@ -1,5 +1,7 @@
 # Haze ◐
-![Uploading image.png…]()
+
+<img width="2559" height="1439" alt="image" src="https://github.com/user-attachments/assets/3867e852-ad6a-47a3-9b8d-76557bbb1590" />
+
 
 **Живые обои, виджеты, верхняя панель и док для Windows 10/11 — в одном уютном приложении.**
 
