@@ -1,0 +1,19 @@
+# Зависимости и сборка
+node_modules/
+dist/
+
+# Логи и временное
+*.log
+npm-debug.log*
+.playwright-cli/
+.backup/
+
+# Личные настройки (на всякий случай — сам Haze хранит их в %APPDATA%)
+settings.json
+
+# Системное
+Thumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/
