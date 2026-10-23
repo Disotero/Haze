@@ -1,0 +1,63 @@
+# Сборка портативного Haze.exe на серверах GitHub.
+#  • Вручную: Actions → «Сборка Haze.exe» → Run workflow, указать папку версии (0.1.0).
+#    Готовый exe — в артефактах запуска.
+#  • По тегу: git tag v0.1.0 && git push origin v0.1.0 — соберёт папку 0.1.0
+#    и выложит Haze.exe в GitHub Releases.
+name: Сборка Haze.exe
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Папка версии, например 0.1.0"
+        required: true
+        default: "0.1.0"
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Какую версию собираем
+        id: v
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then v="${GITHUB_REF_NAME#v}"; else v="${{ inputs.version }}"; fi
+          test -f "$v/package.json" || { echo "::error::Нет папки $v с package.json"; exit 1; }
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ${{ steps.v.outputs.version }}/package-lock.json
+
+      - name: Зависимости
+        working-directory: ${{ steps.v.outputs.version }}
+        run: npm ci
+
+      - name: Сборка
+        working-directory: ${{ steps.v.outputs.version }}
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false" # без подписи сертификатом
+        run: npm run dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Haze-${{ steps.v.outputs.version }}
+          path: ${{ steps.v.outputs.version }}/dist/Haze.exe
+
+      - name: Релиз на GitHub
+        if: github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Haze ${{ steps.v.outputs.version }}
+          files: ${{ steps.v.outputs.version }}/dist/Haze.exe
