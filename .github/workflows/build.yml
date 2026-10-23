@@ -25,7 +25,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Какую версию собираем
         id: v
@@ -34,7 +34,7 @@ jobs:
           test -f "$v/package.json" || { echo "::error::Нет папки $v с package.json"; exit 1; }
           echo "version=$v" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -50,7 +50,7 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: "false" # без подписи сертификатом
         run: npm run dist
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: Haze-${{ steps.v.outputs.version }}
           path: ${{ steps.v.outputs.version }}/dist/Haze.exe
