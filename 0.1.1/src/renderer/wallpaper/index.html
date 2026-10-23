@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file: data:; style-src 'self' 'unsafe-inline' file:; media-src file: data:; img-src file: data:; frame-src file:" />
+    <title>Haze — wallpaper</title>
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
+      #wall { position: fixed; inset: 0; }
+      .wall-fill { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border: 0; display: block; }
+    </style>
+  </head>
+  <body>
+    <div id="wall"></div>
+    <script type="module" src="wallpaper.js"></script>
+  </body>
+</html>

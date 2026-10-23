@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file: data:; style-src 'self' 'unsafe-inline' file:; img-src file: data:" />
+    <title>Haze — dock</title>
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <link rel="stylesheet" href="dock.css" />
+  </head>
+  <body>
+    <div class="tip" id="tip"></div>
+    <nav class="dock" id="dock">
+      <div class="apps" id="apps"></div>
+      <span class="sep"></span>
+      <button class="tile start" id="start" data-name="Пуск">
+        <span class="face"></span>
+      </button>
+    </nav>
+    <!-- Always-on shelf of open windows, bottom-right (the taskbar is hidden). -->
+    <div class="shelf" id="shelf">
+      <div class="shelf-apps" id="shelfApps"></div>
+      <span class="sep"></span>
+      <button class="shelf-btn" id="peek" data-name="Панель задач Windows" data-sub="на 15 секунд"></button>
+      <button class="shelf-btn" id="taskmgr" data-name="Диспетчер задач"></button>
+      <button class="shelf-btn" id="gear" data-name="Настройки Haze"></button>
+    </div>
+    <script type="module" src="dock.js"></script>
+  </body>
+</html>

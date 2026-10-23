@@ -1,0 +1,375 @@
+@import "../../../node_modules/@fontsource/nunito/600.css";
+@import "../../../node_modules/@fontsource/nunito/700.css";
+@import "../../../node_modules/@fontsource/nunito/800.css";
+@import "../../../node_modules/@fontsource/quicksand/500.css";
+@import "../../../node_modules/@fontsource/quicksand/600.css";
+@import "../../../node_modules/@fontsource/quicksand/700.css";
+@import "../../../node_modules/@fontsource/manrope/500.css";
+@import "../../../node_modules/@fontsource/manrope/600.css";
+@import "../../../node_modules/@fontsource/manrope/700.css";
+@import "../../../node_modules/@fontsource/manrope/800.css";
+@import "../../../node_modules/@fontsource/comfortaa/500.css";
+@import "../../../node_modules/@fontsource/comfortaa/600.css";
+@import "../../../node_modules/@fontsource/comfortaa/700.css";
+@import "../../../node_modules/@fontsource/rubik/500.css";
+@import "../../../node_modules/@fontsource/rubik/600.css";
+@import "../../../node_modules/@fontsource/rubik/700.css";
+@import "../../../node_modules/@fontsource/rubik/800.css";
+@import "../../../node_modules/@fontsource/montserrat/500.css";
+@import "../../../node_modules/@fontsource/montserrat/600.css";
+@import "../../../node_modules/@fontsource/montserrat/700.css";
+@import "../../../node_modules/@fontsource/montserrat/800.css";
+@import "../../../node_modules/@fontsource/jetbrains-mono/500.css";
+@import "../../../node_modules/@fontsource/jetbrains-mono/600.css";
+@import "../../../node_modules/@fontsource/jetbrains-mono/700.css";
+@import "../../../node_modules/@fontsource/jetbrains-mono/800.css";
+
+/* Palettes: data-palette × data-theme on <html>. Wallpaper colours (--wp-*)
+   feed the built-in shader; the rest style the glass UI. */
+:root,
+:root[data-palette="sage"] {
+  --wp-1: #9fc9b4;
+  --wp-2: #5f9b86;
+  --wp-3: #f2c4bd;
+  --wp-4: #e9f1df;
+  --glass: rgba(236, 246, 240, 0.5);
+  --glass-strong: rgba(240, 249, 244, 0.72);
+  --glass-edge: rgba(255, 255, 255, 0.6);
+  --ink: #24453a;
+  --ink-soft: #5d7f72;
+  --accent: #4f9277;
+  --accent-2: #e59b93;
+  --track: rgba(36, 69, 58, 0.14);
+  --shadow: rgba(30, 70, 55, 0.25);
+}
+:root[data-palette="sage"][data-theme="dark"] {
+  --wp-1: #2b5a4b;
+  --wp-2: #3f8069;
+  --wp-3: #8c5a66;
+  --wp-4: #16302a;
+  --glass: rgba(22, 40, 35, 0.5);
+  --glass-strong: rgba(24, 44, 38, 0.74);
+  --glass-edge: rgba(255, 255, 255, 0.1);
+  --ink: #e4f2eb;
+  --ink-soft: #9dbcb0;
+  --accent: #8fd3b2;
+  --accent-2: #f0aaa1;
+  --track: rgba(228, 242, 235, 0.14);
+  --shadow: rgba(0, 0, 0, 0.4);
+}
+
+:root[data-palette="warm"] {
+  --wp-1: #f3d9c8;
+  --wp-2: #d9a48b;
+  --wp-3: #c3cfb0;
+  --wp-4: #fbefe5;
+  --glass: rgba(255, 249, 244, 0.5);
+  --glass-strong: rgba(255, 250, 246, 0.74);
+  --glass-edge: rgba(255, 255, 255, 0.7);
+  --ink: #5b4a42;
+  --ink-soft: #917b70;
+  --accent: #c98a6d;
+  --accent-2: #8fa67f;
+  --track: rgba(120, 92, 74, 0.16);
+  --shadow: rgba(120, 92, 74, 0.25);
+}
+:root[data-palette="warm"][data-theme="dark"] {
+  --wp-1: #4a362e;
+  --wp-2: #8a5a44;
+  --wp-3: #55623f;
+  --wp-4: #261d19;
+  --glass: rgba(52, 42, 38, 0.5);
+  --glass-strong: rgba(56, 45, 41, 0.76);
+  --glass-edge: rgba(255, 255, 255, 0.1);
+  --ink: #efe2d8;
+  --ink-soft: #b7a498;
+  --accent: #e0a085;
+  --accent-2: #b9c7a9;
+  --track: rgba(239, 226, 216, 0.14);
+  --shadow: rgba(0, 0, 0, 0.42);
+}
+
+:root[data-palette="lavender"] {
+  --wp-1: #d6cdef;
+  --wp-2: #9d8fd0;
+  --wp-3: #f4c6d8;
+  --wp-4: #f3effb;
+  --glass: rgba(246, 243, 253, 0.5);
+  --glass-strong: rgba(248, 245, 254, 0.74);
+  --glass-edge: rgba(255, 255, 255, 0.7);
+  --ink: #3f3763;
+  --ink-soft: #7a71a0;
+  --accent: #7f6fc4;
+  --accent-2: #e58fae;
+  --track: rgba(63, 55, 99, 0.14);
+  --shadow: rgba(70, 55, 120, 0.25);
+}
+:root[data-palette="lavender"][data-theme="dark"] {
+  --wp-1: #353060;
+  --wp-2: #5a4c96;
+  --wp-3: #7a4468;
+  --wp-4: #1b1832;
+  --glass: rgba(34, 30, 56, 0.52);
+  --glass-strong: rgba(36, 32, 60, 0.76);
+  --glass-edge: rgba(255, 255, 255, 0.1);
+  --ink: #ebe7fb;
+  --ink-soft: #aaa2cf;
+  --accent: #b4a6f2;
+  --accent-2: #f2a6c2;
+  --track: rgba(235, 231, 251, 0.14);
+  --shadow: rgba(0, 0, 0, 0.45);
+}
+
+:root[data-palette="sakura"] {
+  --wp-1: #f6d5df;
+  --wp-2: #e79ab3;
+  --wp-3: #c9e2f0;
+  --wp-4: #fdf0f4;
+  --glass: rgba(255, 245, 248, 0.5);
+  --glass-strong: rgba(255, 247, 250, 0.74);
+  --glass-edge: rgba(255, 255, 255, 0.7);
+  --ink: #5a3442;
+  --ink-soft: #9a6b7b;
+  --accent: #d96b8f;
+  --accent-2: #6fa8c8;
+  --track: rgba(90, 52, 66, 0.14);
+  --shadow: rgba(140, 60, 90, 0.25);
+}
+:root[data-palette="sakura"][data-theme="dark"] {
+  --wp-1: #4a2636;
+  --wp-2: #8a4562;
+  --wp-3: #2f4a63;
+  --wp-4: #1f1219;
+  --glass: rgba(52, 30, 40, 0.52);
+  --glass-strong: rgba(58, 33, 45, 0.76);
+  --glass-edge: rgba(255, 255, 255, 0.1);
+  --ink: #f6e3ea;
+  --ink-soft: #c49aab;
+  --accent: #f19ab8;
+  --accent-2: #9cc9e4;
+  --track: rgba(246, 227, 234, 0.14);
+  --shadow: rgba(0, 0, 0, 0.45);
+}
+
+:root[data-palette="ocean"] {
+  --wp-1: #bfe0f2;
+  --wp-2: #5c9fc9;
+  --wp-3: #f4d7b0;
+  --wp-4: #eef7fc;
+  --glass: rgba(240, 248, 253, 0.5);
+  --glass-strong: rgba(244, 250, 254, 0.74);
+  --glass-edge: rgba(255, 255, 255, 0.7);
+  --ink: #1f3d55;
+  --ink-soft: #5a7d96;
+  --accent: #2f86c0;
+  --accent-2: #e48f45;
+  --track: rgba(31, 61, 85, 0.14);
+  --shadow: rgba(30, 70, 110, 0.25);
+}
+:root[data-palette="ocean"][data-theme="dark"] {
+  --wp-1: #173a55;
+  --wp-2: #2a6a96;
+  --wp-3: #6b4a2c;
+  --wp-4: #0b1b28;
+  --glass: rgba(16, 34, 50, 0.52);
+  --glass-strong: rgba(18, 38, 56, 0.76);
+  --glass-edge: rgba(255, 255, 255, 0.1);
+  --ink: #e2f0fa;
+  --ink-soft: #93b4cc;
+  --accent: #6fc0f0;
+  --accent-2: #f2b47a;
+  --track: rgba(226, 240, 250, 0.14);
+  --shadow: rgba(0, 0, 0, 0.45);
+}
+
+:root[data-palette="sunset"] {
+  --wp-1: #ffd3b0;
+  --wp-2: #f08a6c;
+  --wp-3: #b9a3e3;
+  --wp-4: #fff2e6;
+  --glass: rgba(255, 246, 238, 0.5);
+  --glass-strong: rgba(255, 248, 242, 0.74);
+  --glass-edge: rgba(255, 255, 255, 0.7);
+  --ink: #5b3427;
+  --ink-soft: #9b6b5a;
+  --accent: #e3683f;
+  --accent-2: #8f74d1;
+  --track: rgba(91, 52, 39, 0.14);
+  --shadow: rgba(150, 70, 40, 0.25);
+}
+:root[data-palette="sunset"][data-theme="dark"] {
+  --wp-1: #4d2a2a;
+  --wp-2: #9a4a3c;
+  --wp-3: #43356f;
+  --wp-4: #1d1216;
+  --glass: rgba(52, 30, 30, 0.52);
+  --glass-strong: rgba(58, 34, 33, 0.76);
+  --glass-edge: rgba(255, 255, 255, 0.1);
+  --ink: #fbe6dc;
+  --ink-soft: #c9a090;
+  --accent: #ff9a6e;
+  --accent-2: #b9a3f0;
+  --track: rgba(251, 230, 220, 0.14);
+  --shadow: rgba(0, 0, 0, 0.45);
+}
+
+:root[data-palette="mint"] {
+  --wp-1: #c8efe0;
+  --wp-2: #6cc9a7;
+  --wp-3: #fff1b8;
+  --wp-4: #f0fbf6;
+  --glass: rgba(240, 251, 246, 0.5);
+  --glass-strong: rgba(244, 252, 249, 0.74);
+  --glass-edge: rgba(255, 255, 255, 0.7);
+  --ink: #1f4a3d;
+  --ink-soft: #5c8a7a;
+  --accent: #24a07a;
+  --accent-2: #e6a92e;
+  --track: rgba(31, 74, 61, 0.14);
+  --shadow: rgba(30, 100, 80, 0.22);
+}
+:root[data-palette="mint"][data-theme="dark"] {
+  --wp-1: #143d33;
+  --wp-2: #23775f;
+  --wp-3: #5f5524;
+  --wp-4: #0a1f1a;
+  --glass: rgba(14, 40, 33, 0.52);
+  --glass-strong: rgba(16, 44, 37, 0.76);
+  --glass-edge: rgba(255, 255, 255, 0.1);
+  --ink: #def7ee;
+  --ink-soft: #8fc2b1;
+  --accent: #5fe0b5;
+  --accent-2: #f5cd6e;
+  --track: rgba(222, 247, 238, 0.14);
+  --shadow: rgba(0, 0, 0, 0.45);
+}
+
+:root[data-palette="coffee"] {
+  --wp-1: #e8d6c3;
+  --wp-2: #a97c5a;
+  --wp-3: #d9c7a0;
+  --wp-4: #f7efe6;
+  --glass: rgba(250, 244, 237, 0.52);
+  --glass-strong: rgba(251, 246, 240, 0.76);
+  --glass-edge: rgba(255, 255, 255, 0.7);
+  --ink: #4a3426;
+  --ink-soft: #8a6e5c;
+  --accent: #9a6440;
+  --accent-2: #6f8f6a;
+  --track: rgba(74, 52, 38, 0.15);
+  --shadow: rgba(90, 60, 40, 0.25);
+}
+:root[data-palette="coffee"][data-theme="dark"] {
+  --wp-1: #3a2a20;
+  --wp-2: #6e4b34;
+  --wp-3: #4a4a30;
+  --wp-4: #1a120d;
+  --glass: rgba(44, 32, 25, 0.55);
+  --glass-strong: rgba(48, 35, 27, 0.78);
+  --glass-edge: rgba(255, 255, 255, 0.1);
+  --ink: #f0e2d4;
+  --ink-soft: #b89c86;
+  --accent: #d7a072;
+  --accent-2: #a9c39d;
+  --track: rgba(240, 226, 212, 0.14);
+  --shadow: rgba(0, 0, 0, 0.45);
+}
+
+:root[data-palette="neon"] {
+  --wp-1: #d9d2ff;
+  --wp-2: #7c5cff;
+  --wp-3: #ff7ad9;
+  --wp-4: #f4f1ff;
+  --glass: rgba(246, 244, 255, 0.5);
+  --glass-strong: rgba(248, 246, 255, 0.76);
+  --glass-edge: rgba(255, 255, 255, 0.7);
+  --ink: #2a2153;
+  --ink-soft: #6c62a0;
+  --accent: #6a4cff;
+  --accent-2: #f23fa8;
+  --track: rgba(42, 33, 83, 0.14);
+  --shadow: rgba(80, 50, 200, 0.25);
+}
+:root[data-palette="neon"][data-theme="dark"] {
+  --wp-1: #1b1446;
+  --wp-2: #3a1f8f;
+  --wp-3: #8a1e6e;
+  --wp-4: #07051a;
+  --glass: rgba(14, 10, 38, 0.55);
+  --glass-strong: rgba(18, 13, 46, 0.78);
+  --glass-edge: rgba(140, 120, 255, 0.22);
+  --ink: #ece8ff;
+  --ink-soft: #a49ad8;
+  --accent: #8f7bff;
+  --accent-2: #ff5cc8;
+  --track: rgba(236, 232, 255, 0.14);
+  --shadow: rgba(0, 0, 0, 0.5);
+}
+
+:root[data-palette="mono"] {
+  --wp-1: #e4e4e4;
+  --wp-2: #a8a8a8;
+  --wp-3: #cfcfcf;
+  --wp-4: #f6f6f6;
+  --glass: rgba(250, 250, 250, 0.55);
+  --glass-strong: rgba(252, 252, 252, 0.78);
+  --glass-edge: rgba(255, 255, 255, 0.8);
+  --ink: #222222;
+  --ink-soft: #6f6f6f;
+  --accent: #3d3d3d;
+  --accent-2: #8a8a8a;
+  --track: rgba(0, 0, 0, 0.1);
+  --shadow: rgba(0, 0, 0, 0.2);
+}
+:root[data-palette="mono"][data-theme="dark"] {
+  --wp-1: #2a2a2a;
+  --wp-2: #4a4a4a;
+  --wp-3: #3a3a3a;
+  --wp-4: #121212;
+  --glass: rgba(28, 28, 28, 0.55);
+  --glass-strong: rgba(32, 32, 32, 0.78);
+  --glass-edge: rgba(255, 255, 255, 0.1);
+  --ink: #f0f0f0;
+  --ink-soft: #a0a0a0;
+  --accent: #8a8f98;
+  --accent-2: #6b6b6b;
+  --track: rgba(255, 255, 255, 0.12);
+  --shadow: rgba(0, 0, 0, 0.5);
+}
+
+:root {
+  --radius: 22px;
+  --font-display: "Nunito", ui-rounded, "Segoe UI", system-ui, sans-serif;
+  --font-body: "Quicksand", ui-rounded, "Segoe UI", system-ui, sans-serif;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Fonts (settings → Оформление). */
+:root[data-font="manrope"] {
+  --font-display: "Manrope", "Segoe UI", sans-serif;
+  --font-body: "Manrope", "Segoe UI", sans-serif;
+}
+:root[data-font="comfortaa"] {
+  --font-display: "Comfortaa", "Segoe UI", sans-serif;
+  --font-body: "Comfortaa", "Segoe UI", sans-serif;
+}
+:root[data-font="rubik"] {
+  --font-display: "Rubik", "Segoe UI", sans-serif;
+  --font-body: "Rubik", "Segoe UI", sans-serif;
+}
+:root[data-font="montserrat"] {
+  --font-display: "Montserrat", "Segoe UI", sans-serif;
+  --font-body: "Montserrat", "Segoe UI", sans-serif;
+}
+:root[data-font="mono"] {
+  --font-display: "JetBrains Mono", Consolas, monospace;
+  --font-body: "JetBrains Mono", Consolas, monospace;
+}
+:root[data-font="system"] {
+  --font-display: "Segoe UI Variable Display", "Segoe UI", sans-serif;
+  --font-body: "Segoe UI Variable Text", "Segoe UI", sans-serif;
+}
