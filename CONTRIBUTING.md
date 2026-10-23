@@ -29,8 +29,10 @@ npm start
 ## Новая версия
 
 1. Скопировать актуальные исходники в новую папку `X.Y.Z/` и поднять `version` в её `package.json`.
-2. В этой папке: `npm install && npm run dist`, положить `dist\Haze.exe` рядом с `package.json` (или собрать на GitHub: *Actions* → «Сборка Haze.exe»).
-3. Дописать `CHANGELOG.md` и ссылку на версию в `README.md`.
+2. Дописать `CHANGELOG.md` и ссылку на версию в `README.md`, закоммитить.
+3. Поставить тег: `git tag vX.Y.Z && git push origin vX.Y.Z`. GitHub Actions соберёт `Haze.exe` и выложит его в *Releases*.
+
+exe в папку версии больше не кладём (так было только у 0.1.0): каждый такой файл — ещё ~100 МБ в Git LFS, а у бесплатного LFS ограничены место и трафик. Готовые сборки живут в *Releases*.
 
 ## Использование ИИ
 
