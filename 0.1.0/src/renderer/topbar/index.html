@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file: data:; style-src 'self' 'unsafe-inline' file:; img-src file: data:" />
+    <title>Haze — top bar</title>
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <link rel="stylesheet" href="topbar.css" />
+  </head>
+  <body>
+    <div class="island left">
+      <button class="brand" id="brand" title="Настройки Haze">◐</button>
+      <button class="item" id="taskmgr" title="Диспетчер задач"></button>
+      <span class="sep"></span>
+      <button class="item" id="battery" hidden></button>
+      <span class="vol" id="volWrap">
+        <button class="item" id="volume"></button>
+        <input class="volslider" id="volSlider" type="range" min="0" max="100" step="1" aria-label="Громкость" />
+      </span>
+      <button class="item" id="net"></button>
+      <button class="item" id="bt" hidden></button>
+      <span class="sep"></span>
+      <span class="ws" id="wsName"></span>
+    </div>
+    <div class="island center">
+      <span class="item" id="weather"></span>
+      <span class="dots" id="dots"></span>
+      <button class="item clock num" id="clock" title="Уведомления и календарь"></button>
+      <button class="item lang" id="lang" title="Сменить раскладку"></button>
+    </div>
+    <div class="island right">
+      <span class="rec" id="rec" hidden></span>
+      <button class="item chip" id="alarm" hidden title="Ближайший будильник"></button>
+      <button class="item chip" id="timer" hidden title="Таймер выключения — открыть"></button>
+      <button class="item" id="game" title="Игровой режим: клик — включить/авто"></button>
+      <button class="item" id="dnd" title="Не беспокоить: клик — вкл/выкл, правый клик — настройки уведомлений Windows"></button>
+      <button class="item media" id="media"></button>
+      <button class="item" id="next" title="Следующий трек" hidden></button>
+    </div>
+    <script type="module" src="topbar.js"></script>
+  </body>
+</html>

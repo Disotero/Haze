@@ -1,0 +1,1775 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  font-family: var(--font-body);
+  color: var(--ink);
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Frosted backdrop ─────────────────────────────────────────────────── */
+#backdrop {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+#backdrop .wall-fill {
+  position: absolute;
+  inset: -40px;
+  width: calc(100% + 80px);
+  height: calc(100% + 80px);
+  object-fit: cover;
+  border: 0;
+  filter: blur(26px) saturate(1.25);
+}
+
+/* ── Widgets ──────────────────────────────────────────────────────────── */
+#board {
+  position: fixed;
+  inset: 0;
+}
+.widget {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: rise 0.7s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+.widget.dragging {
+  cursor: grabbing;
+  z-index: 10;
+}
+.widget.dragging .glass {
+  box-shadow: 0 24px 50px -18px var(--shadow), inset 0 0 0 1px var(--glass-edge);
+}
+body.unlocked .widget .glass {
+  cursor: grab;
+}
+.w-weather.linked .glass {
+  cursor: pointer;
+}
+
+/* Magnetic edges: the dragged widget and the one it clings to light up. */
+.widget.snapped .glass,
+.widget.magnet .glass {
+  box-shadow: 0 14px 34px -16px var(--shadow), inset 0 0 0 2px var(--accent);
+}
+.widget.magnet .glass {
+  transition: box-shadow 0.15s;
+}
+.widget.settling {
+  transition: left 0.32s var(--ease), top 0.32s var(--ease);
+}
+/* Where a widget dropped onto another one will land. */
+.ghost {
+  position: fixed;
+  border-radius: var(--radius);
+  border: 2px dashed var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.ghost.on {
+  opacity: 0.9;
+}
+
+.glass {
+  position: relative;
+  background: var(--glass);
+  border-radius: var(--radius);
+  box-shadow: 0 14px 34px -16px var(--shadow), inset 0 0 0 1px var(--glass-edge);
+  padding: 16px 18px;
+  transition: box-shadow 0.35s var(--ease), background-color 0.6s var(--ease);
+  overflow: hidden;
+}
+.glass:hover {
+  box-shadow: 0 18px 40px -16px var(--shadow), inset 0 0 0 1px var(--glass-edge),
+    inset 0 0 0 999px rgba(255, 255, 255, 0.04);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+.muted {
+  color: var(--ink-soft);
+}
+.label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.num {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+}
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--glass-strong);
+  box-shadow: inset 0 0 0 1px var(--glass-edge);
+  transition: transform 0.25s var(--ease), background-color 0.25s;
+}
+.icon-btn:hover {
+  transform: scale(1.08);
+}
+.icon-btn:active {
+  transform: scale(0.95);
+}
+.icon-btn svg {
+  width: 17px;
+  height: 17px;
+}
+.pill {
+  height: 36px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--glass-strong);
+  box-shadow: inset 0 0 0 1px var(--glass-edge);
+  transition: transform 0.25s var(--ease);
+}
+.pill:hover {
+  transform: scale(1.04);
+}
+.pill svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* ── Profile ──────────────────────────────────────────────────────────── */
+.w-profile {
+  width: 300px;
+}
+.w-profile .glass {
+  padding: 0;
+}
+.w-profile .banner {
+  height: 120px;
+  background-size: cover;
+  background-position: center 30%;
+  background-image: radial-gradient(120% 140% at 20% 0%, var(--wp-3), transparent 60%),
+    linear-gradient(140deg, var(--wp-1), var(--wp-2));
+}
+.w-profile .body {
+  padding: 0 18px 16px;
+  margin-top: -30px;
+  position: relative;
+}
+.avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  flex: none;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)) center / cover;
+  box-shadow: 0 0 0 3px var(--glass-strong);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+}
+.w-profile .name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  margin-top: 26px;
+}
+.w-profile .uptime {
+  font-size: 12px;
+}
+.w-profile .status {
+  margin: 12px 0 14px;
+  font-size: 13px;
+}
+.w-profile .actions .pill {
+  flex: 1;
+  justify-content: center;
+}
+.power-menu {
+  position: absolute;
+  inset: auto 12px 12px 12px;
+  padding: 8px;
+  border-radius: 16px;
+  background: var(--glass-strong);
+  box-shadow: 0 12px 30px -10px var(--shadow), inset 0 0 0 1px var(--glass-edge);
+  display: grid;
+  gap: 4px;
+  animation: pop 0.25s var(--ease);
+}
+.power-menu button {
+  text-align: left;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 13px;
+}
+.power-menu button:hover {
+  background: var(--track);
+}
+.power-menu button.confirm {
+  background: var(--accent-2);
+  color: #fff;
+}
+
+/* ── World clock ──────────────────────────────────────────────────────── */
+.w-world {
+  width: 300px;
+}
+.w-world .big {
+  font-weight: 800;
+  font-size: 44px;
+  line-height: 1;
+  text-align: right;
+  margin-top: 6px;
+  letter-spacing: -1px;
+}
+.w-world .date {
+  text-align: right;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.w-world .zones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 14px;
+  margin-top: 14px;
+}
+.w-world .zone .top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+}
+.w-world .zone .off {
+  font-size: 10px;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+.w-world .zone .t {
+  font-weight: 800;
+  font-size: 17px;
+}
+
+/* ── Big clock + date tile ────────────────────────────────────────────── */
+.w-bigclock {
+  align-items: center;
+  width: 170px;
+}
+.w-bigclock .digits {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 92px;
+  line-height: 0.86;
+  text-align: center;
+  color: var(--ink);
+  opacity: 0.92;
+  text-shadow: 0 6px 28px var(--shadow);
+  letter-spacing: -2px;
+  font-variant-numeric: tabular-nums;
+}
+.w-bigclock .tile {
+  width: 104px;
+  padding: 0;
+  text-align: center;
+}
+.w-bigclock .tile .head {
+  background: var(--glass-strong);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 1px;
+  padding: 7px 0 5px;
+  text-transform: uppercase;
+}
+.w-bigclock .tile .head b {
+  color: var(--accent);
+}
+.w-bigclock .tile .day {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 44px;
+  padding: 4px 0 8px;
+}
+
+/* ── Player ───────────────────────────────────────────────────────────── */
+.w-player {
+  width: 360px;
+}
+.w-player .cover {
+  width: 74px;
+  height: 74px;
+  border-radius: 16px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(140deg, var(--wp-1), var(--wp-2)) center / cover;
+  box-shadow: 0 8px 18px -10px var(--shadow);
+  transition: background-image 0.4s;
+}
+.w-player .cover svg {
+  width: 28px;
+  height: 28px;
+  opacity: 0.85;
+  color: #fff;
+}
+.w-player .cover.has-art svg {
+  display: none;
+}
+.w-player .title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 16px;
+}
+.w-player .artist {
+  font-size: 13px;
+}
+.w-player .src {
+  font-size: 11px;
+  margin-top: 2px;
+}
+.w-player .bar {
+  height: 5px;
+  border-radius: 4px;
+  background: var(--track);
+  margin: 12px 0 6px;
+  overflow: hidden;
+}
+.w-player .fill {
+  height: 100%;
+  width: 0;
+  border-radius: 4px;
+  background: var(--accent);
+}
+.w-player .times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+}
+.w-player .controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 4px;
+}
+.w-player .controls .play {
+  width: 46px;
+  height: 46px;
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 8px 18px -8px var(--accent);
+}
+.w-player .controls .play svg {
+  width: 20px;
+  height: 20px;
+}
+.w-player button:disabled {
+  opacity: 0.35;
+  cursor: default;
+  transform: none;
+}
+.w-player .eq {
+  display: inline-flex;
+  gap: 2px;
+  align-items: flex-end;
+  height: 10px;
+  margin-left: 6px;
+}
+.w-player .eq i {
+  width: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  /* Stepped: a handful of repaints a second instead of 60. */
+  animation: eq 1.2s steps(4, end) infinite alternate;
+}
+.w-player .eq i:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.w-player .eq i:nth-child(3) {
+  animation-delay: -0.6s;
+}
+.w-player:not(.playing) .eq {
+  display: none;
+}
+
+/* ── Weather ──────────────────────────────────────────────────────────── */
+.w-weather {
+  width: 360px;
+}
+.w-weather .temp {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 46px;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.w-weather .desc {
+  font-weight: 700;
+  font-size: 14px;
+}
+.w-weather .glyph {
+  width: 58px;
+  height: 58px;
+  flex: none;
+  color: var(--accent);
+}
+.w-weather .glyph svg {
+  width: 100%;
+  height: 100%;
+}
+.w-weather .facts {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.w-weather .facts b {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* ── Stats ────────────────────────────────────────────────────────────── */
+.w-stats {
+  flex-direction: row;
+  width: 360px;
+}
+.w-stats .glass {
+  flex: 1;
+  padding: 14px;
+}
+.w-stats .ring {
+  width: 40px;
+  height: 40px;
+  display: block;
+  margin-left: auto;
+}
+.w-stats .ring circle {
+  transition: stroke-dasharray 1s var(--ease);
+}
+.w-stats .v {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  margin-top: 6px;
+}
+.w-stats .k {
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+/* ── Shared bits for the newer widgets ───────────────────────────────── */
+[hidden] {
+  display: none !important;
+}
+.widget {
+  transform-origin: 0 0;
+}
+.w-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.w-title .muted {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 11px;
+}
+.empty {
+  font-size: 12px;
+  padding: 10px 2px;
+  text-align: center;
+}
+.icon-btn.sm {
+  width: 28px;
+  height: 28px;
+}
+.icon-btn.sm svg {
+  width: 14px;
+  height: 14px;
+}
+.icon-btn.big {
+  width: 50px;
+  height: 50px;
+  background: var(--accent);
+  color: #fff;
+}
+.pill.sm {
+  height: 26px;
+  padding: 0 11px;
+  font-size: 11.5px;
+}
+.pill.wide {
+  width: 100%;
+  justify-content: center;
+  margin-top: 10px;
+}
+.pill.accent {
+  background: var(--accent);
+  color: #fff;
+}
+.row.center {
+  justify-content: center;
+}
+.seg {
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--track);
+}
+.seg button {
+  flex: 1;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  transition: background-color 0.2s, color 0.2s;
+}
+.seg button.on {
+  background: var(--glass-strong);
+  color: var(--ink);
+  box-shadow: 0 3px 10px -6px var(--shadow);
+}
+input[type="text"],
+input[type="time"],
+textarea {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  outline: none;
+  background: var(--glass-strong);
+  box-shadow: inset 0 0 0 1px var(--glass-edge);
+  border-radius: 12px;
+  padding: 7px 11px;
+  min-width: 0;
+}
+input:focus,
+textarea:focus {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: opacity(0.5);
+}
+
+/* Resize grip: a thin bracket tucked into the card's rounded bottom-right
+   corner (placed by positionGrips), shown on hover while unlocked. */
+.grip {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.grip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-right: 2.5px solid var(--ink-soft);
+  border-bottom: 2.5px solid var(--ink-soft);
+  border-bottom-right-radius: 9px;
+}
+.grip:hover::before {
+  border-color: var(--accent);
+}
+body.unlocked .widget:hover > .grip {
+  opacity: 0.7;
+}
+body:not(.unlocked) .grip {
+  display: none;
+}
+
+/* ── Day panel (over other widgets) ──────────────────────────────────── */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+.panel {
+  position: absolute;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: 290px 300px;
+  gap: 20px;
+  padding: 20px 22px;
+  background: var(--glass-strong);
+  box-shadow: 0 30px 70px -24px var(--shadow), inset 0 0 0 1px var(--glass-edge);
+  animation: pop 0.3s var(--ease);
+}
+.panel-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+.panel h4 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 800;
+}
+.panel h4 svg {
+  width: 16px;
+  height: 16px;
+  color: var(--accent);
+}
+.panel section + section {
+  margin-top: 18px;
+}
+.today-line {
+  font-size: 12px;
+  margin-top: 10px;
+}
+.cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.cal-head b {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.cal-grid b {
+  font-size: 10.5px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  padding-bottom: 4px;
+}
+.cal-grid span {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+.cal-grid .weekend {
+  color: var(--accent-2);
+}
+.cal-grid .out {
+  opacity: 0.35;
+}
+.cal-grid .today {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 6px 14px -6px var(--accent);
+}
+.alarm {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--track);
+}
+.alarm b {
+  font-size: 20px;
+  font-weight: 800;
+}
+.alarm small {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+.alarm.off {
+  opacity: 0.5;
+}
+.toggle {
+  width: 36px;
+  height: 21px;
+  border-radius: 999px;
+  background: var(--track);
+  position: relative;
+  flex: none;
+}
+.toggle i {
+  position: absolute;
+  top: 2.5px;
+  left: 2.5px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.25s var(--ease);
+}
+.toggle.on {
+  background: var(--accent);
+}
+.toggle.on i {
+  transform: translateX(15px);
+}
+.alarm-add {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+.day-chips {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 4px;
+}
+.day-chips button {
+  flex: 1;
+  padding: 5px 0;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 800;
+  background: var(--track);
+  color: var(--ink-soft);
+}
+.day-chips button.on {
+  background: var(--accent);
+  color: #fff;
+}
+.a-add {
+  grid-column: 1 / -1;
+  justify-content: center;
+}
+.power-set {
+  display: grid;
+  gap: 8px;
+}
+.power-set .row {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.power-set .pill {
+  height: 30px;
+  padding: 0 12px;
+  font-size: 12px;
+}
+.power-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.power-line small {
+  display: block;
+  color: var(--ink-soft);
+}
+
+/* ── Alarm ringing ───────────────────────────────────────────────────── */
+.ring-card {
+  position: fixed;
+  z-index: 60;
+  left: 50%;
+  top: 30%;
+  translate: -50% 0;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 24px 30px;
+  background: var(--glass-strong);
+  box-shadow: 0 30px 80px -20px var(--shadow), inset 0 0 0 1px var(--glass-edge);
+  animation: pop 0.35s var(--ease);
+}
+.ring-bell svg {
+  width: 40px;
+  height: 40px;
+  color: var(--accent);
+  animation: ring 0.6s ease-in-out infinite alternate;
+}
+.ring-time {
+  font-size: 54px;
+  font-weight: 800;
+  line-height: 1;
+}
+.ring-label {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+@keyframes ring {
+  from {
+    rotate: -14deg;
+  }
+  to {
+    rotate: 14deg;
+  }
+}
+
+.w-bigclock .tile {
+  cursor: pointer;
+}
+
+/* ── Classic clock ───────────────────────────────────────────────────── */
+.w-analog .glass {
+  width: 200px;
+  height: 200px;
+  padding: 10px;
+  border-radius: 50%;
+}
+.w-analog .face {
+  width: 100%;
+  height: 100%;
+  stroke-linecap: round;
+}
+.w-analog .rim {
+  fill: none;
+  stroke: var(--glass-edge);
+  stroke-width: 0.8;
+}
+.w-analog .marks .hour {
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+.w-analog .marks .min {
+  fill: var(--ink-soft);
+  opacity: 0.7;
+}
+.w-analog .nums text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 9px;
+  fill: var(--ink);
+  text-anchor: middle;
+}
+.w-analog .hh {
+  stroke: var(--ink);
+  stroke-width: 3.4;
+}
+.w-analog .mm {
+  stroke: var(--ink);
+  stroke-width: 2.2;
+}
+.w-analog .sec line {
+  stroke: var(--accent-2);
+  stroke-width: 0.9;
+}
+.w-analog .sec circle,
+.w-analog .pin {
+  fill: var(--accent-2);
+}
+
+/* ── Calendar ────────────────────────────────────────────────────────── */
+.w-calendar {
+  width: 290px;
+}
+
+/* ── Notes / to-do ───────────────────────────────────────────────────── */
+.w-notes {
+  width: 300px;
+}
+.w-notes textarea {
+  width: 100%;
+  height: 160px;
+  resize: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  line-height: 1.45;
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.w-todo {
+  width: 300px;
+}
+.todo-list {
+  max-height: 240px;
+  overflow-y: auto;
+}
+.todo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 0;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.todo .box {
+  width: 19px;
+  height: 19px;
+  flex: none;
+  border-radius: 7px;
+  box-shadow: inset 0 0 0 2px var(--accent);
+  display: grid;
+  place-items: center;
+  color: #fff;
+}
+.todo .box svg {
+  width: 13px;
+  height: 13px;
+}
+.todo.done .box {
+  background: var(--accent);
+}
+.todo.done .grow {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+.t-del {
+  opacity: 0;
+  width: 18px;
+  height: 18px;
+  color: var(--ink-soft);
+}
+.t-del svg {
+  width: 13px;
+  height: 13px;
+}
+.todo:hover .t-del {
+  opacity: 1;
+}
+.todo-add input {
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* ── Pomodoro ────────────────────────────────────────────────────────── */
+.w-pomodoro {
+  width: 260px;
+}
+.pomo-body {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 12px auto 8px;
+}
+.pomo-ring {
+  width: 100%;
+  height: 100%;
+  rotate: -90deg;
+}
+.pomo-ring circle {
+  fill: none;
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+.pomo-ring .track {
+  stroke: var(--track);
+}
+.pomo-ring .fill {
+  stroke: var(--accent);
+  transition: stroke-dasharray 1s linear;
+}
+.pomo-time {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 36px;
+  font-weight: 800;
+}
+.w-pomodoro .done-count {
+  font-size: 12px;
+  min-width: 36px;
+}
+
+/* ── Network ─────────────────────────────────────────────────────────── */
+.w-net {
+  width: 260px;
+}
+.net-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+.net-row .arrow svg {
+  width: 16px;
+  height: 16px;
+}
+.net-row.down .arrow {
+  color: var(--accent);
+}
+.net-row.up .arrow {
+  color: var(--accent-2);
+}
+.net-row b {
+  width: 88px;
+  font-size: 15px;
+}
+
+/* ── Quote ───────────────────────────────────────────────────────────── */
+.w-quote {
+  width: 320px;
+}
+.w-quote .glass {
+  cursor: pointer;
+}
+.q-mark {
+  font-family: Georgia, serif;
+  font-size: 48px;
+  line-height: 0.6;
+  color: var(--accent);
+  height: 18px;
+}
+.q-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15.5px;
+  line-height: 1.4;
+}
+.q-who {
+  margin-top: 8px;
+  font-size: 12px;
+  text-align: right;
+}
+
+/* ── Photo frame ─────────────────────────────────────────────────────── */
+.w-photo .glass {
+  width: 320px;
+  height: 220px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.w-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.2s var(--ease);
+}
+.w-photo img.on {
+  opacity: 1;
+}
+.w-photo .pick {
+  position: relative;
+}
+
+/* ── Search ──────────────────────────────────────────────────────────── */
+.w-search {
+  width: 420px;
+}
+.w-search .glass {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px 10px 16px;
+  border-radius: 999px;
+}
+.w-search .s-icon svg {
+  width: 18px;
+  height: 18px;
+  color: var(--ink-soft);
+}
+.w-search input {
+  flex: 1;
+  background: none;
+  box-shadow: none;
+  padding: 6px 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+.w-search .engine {
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: var(--track);
+  color: var(--ink-soft);
+}
+
+/* ── Converter ───────────────────────────────────────────────────────── */
+.w-convert {
+  width: 300px;
+}
+.fmt-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.fmt-list button {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: var(--ink-soft);
+}
+.fmt-list button.on {
+  background: var(--accent);
+  color: #fff;
+}
+.drop {
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  min-height: 130px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 2px dashed color-mix(in srgb, var(--ink-soft) 60%, transparent);
+  text-align: center;
+  font-size: 12px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+.drop svg {
+  width: 26px;
+  height: 26px;
+}
+.drop b {
+  color: var(--accent);
+}
+.drop.over,
+.drop:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.w-convert.busy .drop {
+  animation: pulse 1s ease-in-out infinite alternate;
+}
+.c-results {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+}
+.c-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 6px;
+  border-radius: 8px;
+  text-align: left;
+}
+.c-row small {
+  color: var(--accent);
+  flex: none;
+}
+.c-row.err small {
+  color: var(--accent-2);
+}
+button.c-row:hover {
+  background: var(--track);
+}
+@keyframes pulse {
+  to {
+    opacity: 0.55;
+  }
+}
+
+/* ── Launcher ────────────────────────────────────────────────────────── */
+.w-launcher .glass {
+  padding: 12px;
+}
+.l-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 13px;
+  margin: 0 4px 8px;
+}
+.l-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 4), 66px);
+  gap: 6px;
+}
+.l-app {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 6px 2px;
+  border-radius: 14px;
+  transition: background-color 0.2s;
+}
+.l-app:hover {
+  background: var(--track);
+}
+.l-icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: var(--glass);
+  box-shadow: inset 0 0 0 1px var(--glass-edge);
+}
+.l-icon img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 3px var(--shadow));
+}
+.l-icon svg {
+  width: 22px;
+  height: 22px;
+  color: var(--ink-soft);
+}
+.l-name {
+  max-width: 62px;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+.l-add .l-icon {
+  background: none;
+  box-shadow: inset 0 0 0 2px var(--track);
+}
+.l-add .l-name {
+  color: var(--ink-soft);
+}
+.l-app.bounce .l-icon {
+  animation: lbounce 0.5s var(--ease);
+}
+.l-url input {
+  width: 100%;
+  margin-top: 8px;
+}
+.w-launcher.drop-over .glass {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+@keyframes lbounce {
+  40% {
+    transform: translateY(-8px);
+  }
+}
+
+/* ── Feed widgets (esports, sports, stocks, phone) ───────────────────── */
+.feed .glass {
+  width: 360px;
+}
+.feed-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.feed-head .w-title {
+  margin: 0;
+}
+.feed .tabs,
+.w-sports .leagues {
+  margin-bottom: 6px;
+}
+.feed-list {
+  display: grid;
+  gap: 2px;
+  max-height: 330px;
+  overflow-y: auto;
+}
+.feed-foot {
+  font-size: 10px;
+  margin-top: 6px;
+  text-align: center;
+}
+.match {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-areas: "when when when" "a score b" "event event event";
+  align-items: center;
+  gap: 2px 8px;
+  padding: 7px 8px;
+  border-radius: 12px;
+  text-align: left;
+}
+button.match:hover {
+  background: var(--track);
+}
+.match .when {
+  grid-area: when;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: var(--ink-soft);
+}
+.match.live .when {
+  color: var(--accent-2);
+}
+.match .team {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-weight: 700;
+  font-size: 12.5px;
+}
+.match .team:last-of-type {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.match .team img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex: none;
+}
+.match .score {
+  grid-area: score;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 0 4px;
+}
+.match .event {
+  grid-area: event;
+  font-size: 10.5px;
+  color: var(--ink-soft);
+}
+.match .event:empty {
+  display: none;
+}
+.quote {
+  display: grid;
+  grid-template-columns: 70px 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 4px;
+  border-bottom: 1px solid var(--track);
+  font-size: 13px;
+}
+.quote .sym {
+  font-family: var(--font-display);
+  font-weight: 800;
+}
+.quote .p {
+  font-weight: 800;
+}
+.quote .ch {
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 7px;
+  min-width: 58px;
+  text-align: right;
+}
+.quote.up .ch {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.quote.down .ch {
+  color: var(--accent-2);
+  background: color-mix(in srgb, var(--accent-2) 16%, transparent);
+}
+.edit-row {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.edit-row small {
+  font-size: 10.5px;
+}
+.phone-body .dev b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 15px;
+}
+.phone-body .sub {
+  margin: 10px 0 4px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--ink-soft);
+}
+.phone-body .file,
+.phone-body .bt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  padding: 3px 0;
+}
+.phone-body .file small {
+  margin-left: auto;
+  flex: none;
+}
+.phone-body .bt span {
+  flex: 1;
+}
+.feed-list::-webkit-scrollbar,
+.todo-list::-webkit-scrollbar {
+  width: 0;
+}
+
+/* ── Motion ───────────────────────────────────────────────────────────── */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes eq {
+  from {
+    height: 2px;
+  }
+  to {
+    height: 10px;
+  }
+}
+:root[data-reduce-motion] *,
+:root[data-reduce-motion] *::before {
+  animation: none !important;
+  transition: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.w-pomodoro .seg button {
+  padding: 5px 4px;
+  font-size: 11px;
+}
+
+/* ── Free width / height ─────────────────────────────────────────────── */
+.widget.sized-w {
+  width: var(--w) !important;
+}
+.widget.sized-w > .glass {
+  width: auto !important;
+}
+.widget.sized-h > .glass {
+  height: var(--h);
+  display: flex;
+  flex-direction: column;
+}
+.widget.sized-h .todo-list,
+.widget.sized-h .feed-list,
+.widget.sized-h textarea,
+.widget.sized-h .l-grid,
+.widget.sized-h .drop {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  height: auto;
+}
+.widget.sized-w .l-grid {
+  grid-template-columns: repeat(auto-fill, 66px);
+}
+.grip-r,
+.grip-b {
+  position: absolute;
+  opacity: 0;
+  border-radius: 999px;
+  background: var(--ink-soft);
+  transition: opacity 0.2s, background-color 0.2s;
+}
+.grip-r {
+  width: 5px;
+  height: 30px;
+  cursor: ew-resize;
+}
+.grip-b {
+  width: 30px;
+  height: 5px;
+  cursor: ns-resize;
+}
+.grip-r:hover,
+.grip-b:hover {
+  background: var(--accent);
+}
+body.unlocked .widget.stretchable:hover > .grip-r,
+body.unlocked .widget.stretchable:hover > .grip-b {
+  opacity: 0.6;
+}
+.widget:not(.stretchable) > .grip-r,
+.widget:not(.stretchable) > .grip-b,
+body:not(.unlocked) .grip-r,
+body:not(.unlocked) .grip-b {
+  display: none;
+}
+
+/* ── Calendar: hover feedback and notes on dates ─────────────────────── */
+.cal-grid button {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font: inherit;
+  font-weight: 700;
+  position: relative;
+  transition: background-color 0.15s, transform 0.15s var(--ease);
+}
+.cal-grid button:hover {
+  background: var(--track);
+  transform: scale(1.12);
+}
+.cal-grid button.weekend {
+  color: var(--accent-2);
+}
+.cal-grid button.out {
+  opacity: 0.35;
+}
+.cal-grid button.today {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 6px 14px -6px var(--accent);
+}
+.cal-grid button.sel {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+.cal-grid button.has-note::after {
+  content: "";
+  position: absolute;
+  bottom: 3px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent-2);
+}
+.cal-grid button.today.has-note::after {
+  background: #fff;
+}
+.cal-note {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 14px;
+  background: var(--glass-strong);
+  box-shadow: inset 0 0 0 1px var(--glass-edge);
+}
+.cal-note-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+.cal-note textarea {
+  width: 100%;
+  height: 64px;
+  resize: none;
+  margin-top: 4px;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.cal-hint {
+  min-height: 16px;
+  margin-top: 6px;
+  font-size: 11.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.panel.no-cal {
+  grid-template-columns: 300px;
+}
+
+/* Launcher tiles: open (dot) and minimized (dimmed) like a taskbar. */
+.l-app {
+  position: relative;
+}
+.l-app.open::after,
+.l-app.min::after {
+  content: "";
+  position: absolute;
+  top: 48px;
+  left: 50%;
+  width: 14px;
+  height: 3px;
+  margin-left: -7px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.l-app.min::after {
+  width: 5px;
+  margin-left: -2.5px;
+  background: var(--ink-soft);
+}
+.l-app.min .l-icon img {
+  opacity: 0.55;
+}
+
+/* ── News ────────────────────────────────────────────────────────────── */
+.news {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 8px 6px;
+  border-radius: 12px;
+  text-align: left;
+}
+.news:hover {
+  background: var(--track);
+}
+.news img {
+  width: 56px;
+  height: 42px;
+  flex: none;
+  border-radius: 8px;
+  object-fit: cover;
+}
+.news .n-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.news small {
+  display: block;
+  font-size: 10.5px;
+  margin-top: 2px;
+}
+
+/* ── Readability on any wallpaper ────────────────────────────────────────
+   A denser frost and a soft halo in the glass colour behind the text;
+   the big clock digits (no card under them) get a proper shadow. */
+.glass {
+  background: color-mix(in srgb, var(--glass) 72%, transparent);
+  text-shadow: 0 0 4px color-mix(in srgb, var(--glass-strong) 70%, transparent);
+}
+/* Live glass: mostly the blurred wallpaper, a light tint, the halo keeps text readable. */
+body.live-glass .glass {
+  background: color-mix(in srgb, var(--glass) 38%, transparent);
+  text-shadow: 0 0 4px color-mix(in srgb, var(--glass-strong) 70%, transparent);
+}
+.w-bigclock .digits {
+  opacity: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.28), 0 6px 26px var(--shadow), 0 0 40px var(--shadow);
+}
+
+.w-news .modes {
+  margin-bottom: 8px;
+}
+.news-pick input,
+.news-block input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 6px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.chips button,
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  background: var(--track);
+  color: var(--ink-soft);
+}
+.chips button.on,
+.chip {
+  background: var(--accent);
+  color: #fff;
+}
+.chip button {
+  font-weight: 900;
+  opacity: 0.8;
+}
+.w-news .filter.on {
+  background: var(--accent-2);
+  color: #fff;
+}
+.w-news .news-list {
+  max-height: 380px;
+}
+
+.news-fold {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 8px;
+  margin-bottom: 6px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  text-align: left;
+}
+.news-fold:hover {
+  background: var(--track);
+}
+.news-fold b {
+  flex: none;
+  color: var(--accent);
+}
+
+/* Weak PC: an opaque frost, no blur behind, no shadows to composite. */
+body.low-power .glass {
+  background: var(--glass-strong);
+  box-shadow: inset 0 0 0 1px var(--glass-edge);
+  text-shadow: none;
+}
+body.low-power #backdrop {
+  display: none;
+}
+
+/* "Clear" cards: almost no tint, just an edge — the wallpaper shows through.
+   Text keeps a soft shadow so it stays readable. */
+:root[data-glass="clear"] .glass {
+  background: color-mix(in srgb, var(--glass) 6%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--glass-edge) 70%, transparent);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45), 0 0 10px rgba(0, 0, 0, 0.25);
+}
+:root[data-glass="clear"] #backdrop {
+  display: none;
+}
+:root[data-glass="clear"] .icon-btn,
+:root[data-glass="clear"] .pill {
+  background: color-mix(in srgb, var(--glass-strong) 45%, transparent);
+}
