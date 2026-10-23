@@ -1,4 +1,4 @@
-# Haze <img width="45" height="45" alt="icon" src="https://github.com/user-attachments/assets/080877a8-7fd3-4880-9d26-2860da9366e2" /> 
+# <img width="45" height="45" alt="icon" src="https://github.com/user-attachments/assets/080877a8-7fd3-4880-9d26-2860da9366e2" />  Haze 
 
 **Живые обои, виджеты, верхняя панель и док для Windows 10/11 — в одном уютном приложении.**
 
