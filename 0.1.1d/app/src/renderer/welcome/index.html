@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file: data:; style-src 'self' 'unsafe-inline' file:; img-src file: data:; script-src 'self' file:; connect-src 'none'; object-src 'none'; base-uri 'none'" />
+    <title>Haze — добро пожаловать</title>
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <link rel="stylesheet" href="welcome.css" />
+  </head>
+  <body>
+    <div class="drag"></div>
+    <button class="x" id="close" title="Закрыть" aria-label="Закрыть"><svg viewBox="0 0 12 12"><path d="M3 3l6 6M9 3l-6 6" /></svg></button>
+
+    <header>
+      <img class="logo" src="../../../assets/icon.svg" alt="" />
+      <div>
+        <h1>Привет! Это Haze</h1>
+        <p>Живые обои, виджеты, своя панель и док. Вот что здесь можно поменять — всё настраивается в любой момент, ничего не сломаешь.</p>
+      </div>
+    </header>
+
+    <p class="note" id="weNote" hidden>
+      <b>Нашёл Wallpaper Engine.</b> Haze не стал перекрывать его обои — виджеты лягут поверх них. Переключить можно в разделе «Обои».
+    </p>
+
+    <main class="cards" id="cards"></main>
+
+    <footer>
+      <p class="tip">Настройки всегда под рукой: <b>◐</b> на панели, значок в трее или <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd>.<br />Выйти — правый клик по значку в трее → «Выход».</p>
+      <div class="actions">
+        <button class="ghost" id="settings">Открыть настройки</button>
+        <button class="primary" id="start">Поехали</button>
+      </div>
+    </footer>
+
+    <script type="module" src="welcome.js"></script>
+  </body>
+</html>
