@@ -1,5 +1,5 @@
 # Сборка портативного Haze.exe на серверах GitHub.
-#  • Вручную: Actions → «Сборка Haze.exe» → Run workflow, указать папку версии (0.1.0).
+#  • Вручную: Actions → «Сборка Haze.exe» → Run workflow, указать папку версии (0.1.0, 0.1.1c).
 #    Готовый exe — в артефактах запуска.
 #  • По тегу: git tag v0.1.0 && git push origin v0.1.0 — соберёт папку 0.1.0
 #    и выложит Haze.exe в GitHub Releases.
@@ -15,12 +15,16 @@ on:
   push:
     tags: ["v*"]
 
+# Сборке хватает чтения; право писать в репозиторий — только у шага релиза ниже.
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
     runs-on: windows-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      dir: ${{ steps.v.outputs.dir }}
     defaults:
       run:
         shell: bash
@@ -29,23 +33,37 @@ jobs:
 
       - name: Какую версию собираем
         id: v
+        # Ввод из формы — только через переменную окружения, не подстановкой в скрипт.
+        env:
+          EVENT: ${{ github.event_name }}
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          if [ "${{ github.event_name }}" = "push" ]; then v="${GITHUB_REF_NAME#v}"; else v="${{ inputs.version }}"; fi
-          test -f "$v/package.json" || { echo "::error::Нет папки $v с package.json"; exit 1; }
+          if [ "$EVENT" = "push" ]; then v="${GITHUB_REF_NAME#v}"; else v="$INPUT_VERSION"; fi
+          [[ "$v" =~ ^[0-9]+\.[0-9]+\.[0-9]+[a-z]?$ ]] || { echo "::error::Версия должна быть вида 0.1.1 или 0.1.1c"; exit 1; }
+          # С 0.1.1c приложение лежит в подпапке app/.
+          if [ -f "$v/app/package.json" ]; then d="$v/app"; else d="$v"; fi
+          test -f "$d/package.json" || { echo "::error::Нет папки $v с package.json"; exit 1; }
           echo "version=$v" >> "$GITHUB_OUTPUT"
+          echo "dir=$d" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: ${{ steps.v.outputs.version }}/package-lock.json
+          cache-dependency-path: ${{ steps.v.outputs.dir }}/package-lock.json
 
       - name: Зависимости
-        working-directory: ${{ steps.v.outputs.version }}
+        working-directory: ${{ steps.v.outputs.dir }}
         run: npm ci
 
+      - name: Проверка кода
+        working-directory: ${{ steps.v.outputs.dir }}
+        run: |
+          npm run lint --if-present
+          npm run test --if-present
+
       - name: Сборка
-        working-directory: ${{ steps.v.outputs.version }}
+        working-directory: ${{ steps.v.outputs.dir }}
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false" # без подписи сертификатом
         run: npm run dist
@@ -53,11 +71,21 @@ jobs:
       - uses: actions/upload-artifact@v6
         with:
           name: Haze-${{ steps.v.outputs.version }}
-          path: ${{ steps.v.outputs.version }}/dist/Haze.exe
+          path: ${{ steps.v.outputs.dir }}/dist/Haze.exe
+
+  release:
+    if: github.event_name == 'push'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: Haze-${{ needs.build.outputs.version }}
 
       - name: Релиз на GitHub
-        if: github.event_name == 'push'
         uses: softprops/action-gh-release@v2
         with:
-          name: Haze ${{ steps.v.outputs.version }}
-          files: ${{ steps.v.outputs.version }}/dist/Haze.exe
+          name: Haze ${{ needs.build.outputs.version }}
+          files: Haze.exe
