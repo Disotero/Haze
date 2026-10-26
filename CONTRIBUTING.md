@@ -15,7 +15,7 @@
 ## Собрать у себя
 
 ```bat
-cd 0.1.1cpp
+cd 0.1.1d\app
 npm install
 npm start
 ```
