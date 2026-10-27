@@ -1,0 +1,44 @@
+[package]
+name = "haze-sys"
+version = "0.1.0"
+edition = "2021"
+description = "Native status/media helper for Haze — replaces status.ps1 and media.ps1"
+
+[[bin]]
+name = "haze-sys"
+path = "src/main.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.58", features = [
+    "Devices_Radios",
+    "Foundation",
+    "Foundation_Collections",
+    "Media_Control",
+    "Storage_Streams",
+    "Win32_Foundation",
+    "Win32_Media_Audio",
+    "Win32_Media_Audio_Endpoints",
+    "Win32_NetworkManagement_IpHelper",
+    "Win32_NetworkManagement_Ndis",
+    "Win32_NetworkManagement_WiFi",
+    "Win32_Networking_NetworkListManager",
+    "Win32_Networking_WinSock",
+    "Win32_System_Com",
+    "Win32_System_Registry",
+    "Win32_UI_Shell_PropertiesSystem",
+    # Exposes the *_Impl traits the #[implement] macro needs.
+    "implement",
+] }
+# Direct dep: the #[implement] macro expands to `windows_core::...` paths.
+windows-core = "0.58"
+
+[profile.release]
+lto = true
+opt-level = "s"
+strip = true
+panic = "abort"
+codegen-units = 1

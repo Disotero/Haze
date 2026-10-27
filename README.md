@@ -13,7 +13,7 @@ Haze превращает рабочий стол в аккуратную «ст
 
 ## Скачать и запустить
 
-Текущая версия — **0.1.1d**.
+Текущая версия — **0.1.2**.
 
 1. Скачайте **`Haze.exe`** (≈100 МБ, портативная версия — установка не нужна): из раздела [Releases](../../releases) (сборка 0.1.0 лежит ещё и в папке [`0.1.0`](0.1.0)).
 2. Запустите. Windows SmartScreen может предупредить, что издатель неизвестен (exe не подписан сертификатом) — «Подробнее» → «Выполнить в любом случае».
@@ -76,15 +76,16 @@ Haze/
 ├── LICENSE              ← MIT
 ├── .github/workflows/   ← автосборка Haze.exe на GitHub Actions
 ├── 0.1.0/               ← версия 0.1.0 (в ней же лежит её Haze.exe)
-├── 0.1.1/, 0.1.1c/      ← прошлые версии (исходники, exe — в Releases)
-└── 0.1.1d/              ← текущая версия
+├── 0.1.1/ … 0.1.1d/     ← прошлые версии (исходники, exe — в Releases)
+└── 0.1.2/               ← текущая версия
     ├── start.cmd        ← запустить Haze из исходников
     ├── stop.cmd         ← аккуратно закрыть запущенный Haze
     ├── app/             ← само приложение
     │   ├── src/         ← исходники
-    │   │   ├── main/    ← главный процесс Electron + PowerShell-мосты к Windows
+    │   │   ├── main/    ← главный процесс Electron + мосты к Windows
     │   │   ├── renderer/← окна: обои, виджеты, панель, док, настройки, приветствие, браузер
     │   │   └── preload.js ← мост между окнами и главным процессом
+    │   ├── native/      ← haze-sys: нативный помощник на Rust (громкость, сеть, «сейчас играет»)
     │   ├── assets/      ← иконка приложения
     │   ├── test/        ← тесты (npm test)
     │   ├── package.json
@@ -99,10 +100,10 @@ Haze/
 
 ## Запуск из исходников
 
-Нужен [Node.js](https://nodejs.org/) 20+.
+Нужен [Node.js](https://nodejs.org/) 20+. Для нативного помощника — [Rust](https://rustup.rs/) (`cargo build --release` в `app\native\haze-sys`); без него Haze работает на PowerShell-скриптах.
 
 ```bat
-cd 0.1.1d\app
+cd 0.1.2\app
 npm install
 npm start            :: запустить
 npm run stop         :: аккуратно закрыть запущенный Haze
@@ -117,16 +118,16 @@ npm run dist         :: собрать портативный dist\Haze.exe
 
 В репозитории есть workflow [`.github/workflows/build.yml`](.github/workflows/build.yml):
 
-- **Вручную:** вкладка *Actions* → «Сборка Haze.exe» → *Run workflow*, указать папку версии (`0.1.1d`). Готовый exe появится в артефактах запуска.
-- **Релиз:** `git tag v0.1.1 && git push origin v0.1.1` — exe соберётся и сам выложится в *Releases*.
+- **Вручную:** вкладка *Actions* → «Сборка Haze.exe» → *Run workflow*, указать папку версии (`0.1.2`). Готовый exe появится в артефактах запуска.
+- **Релиз:** `git tag v0.1.2 && git push origin v0.1.2` — exe соберётся и сам выложится в *Releases*.
 
-Подробнее про устройство кода — [`0.1.1d/docs/ARCHITECTURE.md`](0.1.1d/docs/ARCHITECTURE.md).
+Подробнее про устройство кода — [`0.1.2/docs/ARCHITECTURE.md`](0.1.2/docs/ARCHITECTURE.md).
 
 ---
 
 ## Стек
 
-Electron 45 · чистый HTML/CSS/JS без фреймворков · [koffi](https://koffi.dev/) для вызовов WinAPI · PowerShell-скрипты для громкости, SMTC и трея · шрифты [Fontsource](https://fontsource.org/) · сборка [electron-builder](https://www.electron.build/).
+Electron 45 · чистый HTML/CSS/JS без фреймворков · [koffi](https://koffi.dev/) для вызовов WinAPI · помощник на Rust ([windows-rs](https://github.com/microsoft/windows-rs)) для громкости, сети и SMTC · PowerShell-скрипты для трея и телефона · шрифты [Fontsource](https://fontsource.org/) · сборка [electron-builder](https://www.electron.build/).
 
 ## Известные ограничения
 

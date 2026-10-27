@@ -1,0 +1,77 @@
+{
+  "name": "haze",
+  "productName": "Haze",
+  "version": "0.1.2",
+  "private": true,
+  "description": "Haze — live wallpaper, widgets, control bar and dock for Windows",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "stop": "electron . --quit",
+    "dist": "electron-builder --win portable",
+    "lint": "eslint src test",
+    "test": "node --test test/*.test.*"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "electron": "45.0.0",
+    "electron-builder": "^26.15.3",
+    "eslint": "^10.13.0",
+    "eslint-plugin-no-unsanitized": "^4.1.5",
+    "globals": "^17.13.0"
+  },
+  "dependencies": {
+    "@fontsource/comfortaa": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/manrope": "^5.3.0",
+    "@fontsource/montserrat": "^5.3.0",
+    "@fontsource/nunito": "^5.3.0",
+    "@fontsource/quicksand": "^5.3.0",
+    "@fontsource/rubik": "^5.3.0",
+    "koffi": "^3.3.3"
+  },
+  "allowScripts": {
+    "electron@45.0.0": true
+  },
+  "author": "Disotero",
+  "license": "MIT",
+  "build": {
+    "appId": "local.haze.desktop",
+    "productName": "Haze",
+    "asar": false,
+    "directories": {
+      "output": "dist",
+      "buildResources": "assets"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "native/haze-sys/target/release/haze-sys.exe",
+        "to": "haze-sys.exe"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.png"
+    },
+    "portable": {
+      "artifactName": "Haze.exe"
+    },
+    "electronLanguages": [
+      "ru",
+      "en-US"
+    ],
+    "compression": "maximum"
+  }
+}

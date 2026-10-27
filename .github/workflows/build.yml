@@ -1,5 +1,5 @@
 # Сборка портативного Haze.exe на серверах GitHub.
-#  • Вручную: Actions → «Сборка Haze.exe» → Run workflow, указать папку версии (0.1.0, 0.1.1c).
+#  • Вручную: Actions → «Сборка Haze.exe» → Run workflow, указать папку версии (0.1.0, 0.1.2).
 #    Готовый exe — в артефактах запуска.
 #  • По тегу: git tag v0.1.0 && git push origin v0.1.0 — соберёт папку 0.1.0
 #    и выложит Haze.exe в GitHub Releases.
@@ -61,6 +61,15 @@ jobs:
         run: |
           npm run lint --if-present
           npm run test --if-present
+
+      - name: Нативный помощник (Rust)
+        working-directory: ${{ steps.v.outputs.dir }}
+        # С 0.1.2: haze-sys.exe уходит в ресурсы exe через build.extraResources.
+        run: |
+          if [ -f native/haze-sys/Cargo.toml ]; then
+            cargo test --release --manifest-path native/haze-sys/Cargo.toml
+            cargo build --release --manifest-path native/haze-sys/Cargo.toml
+          fi
 
       - name: Сборка
         working-directory: ${{ steps.v.outputs.dir }}

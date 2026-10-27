@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file: data:; style-src 'self' 'unsafe-inline' file:; img-src file: data:; media-src file:; script-src 'self' file:; connect-src 'none'; object-src 'none'; base-uri 'none'" />
+    <title>Haze — настройки</title>
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <link rel="stylesheet" href="settings.css" />
+  </head>
+  <body>
+    <!-- Frameless window: our own drag strip and buttons. -->
+    <div class="titlebar">
+      <button data-win="min" title="Свернуть" aria-label="Свернуть"><svg viewBox="0 0 12 12"><path d="M2 6h8"/></svg></button>
+      <button data-win="max" title="Развернуть" aria-label="Развернуть"><svg viewBox="0 0 12 12"><rect x="2.5" y="2.5" width="7" height="7" rx="1.5"/></svg></button>
+      <button data-win="close" class="close" title="Закрыть" aria-label="Закрыть"><svg viewBox="0 0 12 12"><path d="M3 3l6 6M9 3l-6 6"/></svg></button>
+    </div>
+
+    <aside>
+      <div class="brand"><img class="logo" src="../../../assets/icon.svg" alt="" /><b>haze</b></div>
+      <div class="search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        <input type="text" id="find" aria-label="Поиск настроек" placeholder="Поиск настроек…" spellcheck="false" autocomplete="off" />
+        <div class="find-results" id="findResults" hidden></div>
+      </div>
+      <nav id="nav">
+        <div class="group">Внешний вид</div>
+        <button type="button" data-page="wallpaper"><i aria-hidden="true" data-icon="image"></i>Обои</button>
+        <button type="button" data-page="look"><i aria-hidden="true" data-icon="palette"></i>Оформление</button>
+        <button type="button" data-page="presets"><i aria-hidden="true" data-icon="layout"></i>Пресеты</button>
+        <div class="group">Рабочий стол</div>
+        <button type="button" data-page="widgets"><i aria-hidden="true" data-icon="widgets"></i>Виджеты</button>
+        <button type="button" data-page="launchers"><i aria-hidden="true" data-icon="apps"></i>Панели приложений</button>
+        <button type="button" data-page="topbar"><i aria-hidden="true" data-icon="bar"></i>Инфо-панель</button>
+        <button type="button" data-page="dock"><i aria-hidden="true" data-icon="dock"></i>Док и трей</button>
+        <div class="group">Данные</div>
+        <button type="button" data-page="weather"><i aria-hidden="true" data-icon="cloud"></i>Погода</button>
+        <button type="button" data-page="clocks"><i aria-hidden="true" data-icon="globe"></i>Мировое время</button>
+        <button type="button" data-page="profile"><i aria-hidden="true" data-icon="user"></i>Профиль</button>
+        <div class="group">Haze</div>
+        <button type="button" data-page="system"><i aria-hidden="true" data-icon="gear"></i>Система</button>
+        <button type="button" data-page="about"><i aria-hidden="true" data-icon="info"></i>О Haze</button>
+      </nav>
+    </aside>
+
+    <main id="main">
+      <!-- ── Обои ── -->
+      <section data-page="wallpaper">
+        <header><h1>Обои</h1><p>Живой фон рабочего стола — своя анимация, видео, картинка или Wallpaper Engine.</p></header>
+        <div class="hero">
+          <div class="seg wide" id="wpType">
+            <button data-v="shader">Анимация Haze</button>
+            <button data-v="file">Свой файл</button>
+            <button data-v="we">Wallpaper Engine</button>
+          </div>
+          <div class="hero-preview" id="wpPreview"><span id="wpPreviewLabel"></span></div>
+          <div class="file-row" id="wpFileRow">
+            <div class="path"><span id="wpPath">Файл не выбран</span><small id="wpHint"></small></div>
+            <div class="actions">
+              <select id="wpInterval" title="Как часто менять картинку">
+                <option value="60">каждую минуту</option><option value="300">каждые 5 мин</option><option value="600">каждые 10 мин</option>
+                <option value="1800">каждые 30 мин</option><option value="3600">каждый час</option><option value="10800">каждые 3 часа</option>
+              </select>
+              <button class="btn ghost" id="wpPick">Файл…</button>
+              <button class="btn ghost" id="wpPickFolder">Папка…</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <label class="row"><span>Звук обоев<small>Для видео-обоев и Wallpaper Engine</small></span><input type="checkbox" class="switch" id="wpSound" /></label>
+          <label class="row"><span>Пауза, когда окно на весь экран<small>Обои не видны — не тратим ресурсы</small></span><input type="checkbox" class="switch" id="pauseCovered" /></label>
+          <label class="row"><span>Плавность анимации<small>Кадров в секунду</small></span>
+            <select id="fps"><option value="15">15</option><option value="30">30</option><option value="60">60</option></select></label>
+        </div>
+        <div class="card" id="weCard">
+          <div class="row"><span>Wallpaper Engine<small id="weState">ищу…</small></span><div class="actions" id="weActions"></div></div>
+          <div id="weBody">
+            <label class="row"><span>Живое стекло<small>Виджеты размывают анимацию WE в реальном времени</small></span><input type="checkbox" class="switch" id="liveGlass" /></label>
+            <div class="we-tools">
+              <input type="text" id="weSearch" aria-label="Поиск по библиотеке Wallpaper Engine" placeholder="Поиск по библиотеке…" autocomplete="off" />
+              <div class="seg small" id="weFilter">
+                <button data-v="all">Все</button><button data-v="video">Видео</button><button data-v="web">Web</button><button data-v="scene">Сцены</button>
+              </div>
+            </div>
+            <div class="we-grid" id="weGrid"></div>
+            <p class="hint">Видео и web-обои Haze проигрывает сам. Сцены рисует только Wallpaper Engine — при выборе сцены Haze переключится в его режим, виджеты останутся поверх.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Оформление ── -->
+      <section data-page="look">
+        <header><h1>Оформление</h1><p>Цвета, тема и вид панелей.</p></header>
+        <div class="card">
+          <div class="row"><span>Тема</span>
+            <div class="seg" id="theme"><button data-v="auto">Как в системе</button><button data-v="light">Светлая</button><button data-v="dark">Тёмная</button></div>
+          </div>
+          <div class="row stack"><span>Палитра</span>
+            <div class="swatches" id="palette">
+              <button data-v="sage"><i style="--a:#9fc9b4;--b:#e59b93"></i>Шалфей</button>
+              <button data-v="warm"><i style="--a:#f3d9c8;--b:#c98a6d"></i>Тёплая</button>
+              <button data-v="lavender"><i style="--a:#d6cdef;--b:#e58fae"></i>Лаванда</button>
+              <button data-v="sakura"><i style="--a:#f6d5df;--b:#d96b8f"></i>Сакура</button>
+              <button data-v="ocean"><i style="--a:#bfe0f2;--b:#2f86c0"></i>Океан</button>
+              <button data-v="sunset"><i style="--a:#ffd3b0;--b:#8f74d1"></i>Закат</button>
+              <button data-v="mint"><i style="--a:#c8efe0;--b:#24a07a"></i>Мята</button>
+              <button data-v="coffee"><i style="--a:#e8d6c3;--b:#9a6440"></i>Кофе</button>
+              <button data-v="neon"><i style="--a:#7c5cff;--b:#ff4fb8"></i>Неон</button>
+              <button data-v="mono"><i style="--a:#e4e4e4;--b:#3d3d3d"></i>Моно</button>
+            </div>
+          </div>
+          <div class="row"><span>Стиль панели и дока</span>
+            <div class="seg" id="barStyle"><button data-v="glass">Стекло</button><button data-v="strip">Полоса</button><button data-v="float">Парящий</button><button data-v="neon">Неон</button></div>
+          </div>
+          <div class="row"><span>Стиль виджетов<small>«Почти прозрачный» — только тонкая рамка, обои видны насквозь. «Плитки» — плотные карточки в духе Material You, светлые или тёмные по теме</small></span>
+            <div class="seg" id="glassStyle"><button data-v="frost">Матовое стекло</button><button data-v="clear">Почти прозрачный</button><button data-v="tiles">Плитки</button></div>
+          </div>
+          <div class="row stack"><span>Шрифт</span>
+            <div class="fonts" id="font">
+              <button data-v="haze" style="font-family:Nunito">Haze</button>
+              <button data-v="manrope" style="font-family:Manrope">Manrope</button>
+              <button data-v="comfortaa" style="font-family:Comfortaa">Comfortaa</button>
+              <button data-v="rubik" style="font-family:Rubik">Rubik</button>
+              <button data-v="montserrat" style="font-family:Montserrat">Montserrat</button>
+              <button data-v="mono" style="font-family:'JetBrains Mono'">JetBrains Mono</button>
+              <button data-v="system" style="font-family:'Segoe UI'">Системный</button>
+            </div>
+          </div>
+          <label class="row"><span>Меньше анимаций</span><input type="checkbox" class="switch" id="reduceMotion" /></label>
+        </div>
+      </section>
+
+      <!-- ── Пресеты ── -->
+      <section data-page="presets">
+        <header><h1>Пресеты</h1><p>Готовые расстановки виджетов. Клик — применить; места и размеры сбросятся под пресет.</p></header>
+        <div class="preset-grid" id="presetGrid"></div>
+        <div class="card">
+          <div class="row"><span>Мои пресеты<small>Виджеты, их места и размеры, панели приложений, тема и палитра</small></span>
+            <div class="actions"><input type="text" id="presetName" aria-label="Название пресета" placeholder="Название, например «Вечер»…" autocomplete="off" /><button class="btn" id="presetSave">Сохранить текущую</button></div>
+          </div>
+          <div id="userPresets"></div>
+        </div>
+      </section>
+
+      <!-- ── Виджеты ── -->
+      <section data-page="widgets">
+        <header><h1>Виджеты</h1><p>Переключатель справа включает виджет, шестерёнка рядом — его настройки. Перетаскивай мышью, размер — уголком или Ctrl + колесо, правый клик — меню виджета.</p></header>
+        <div class="card">
+          <label class="row"><span>Закрепить расстановку<small>Когда выключено, виджеты можно двигать и менять размер</small></span><input type="checkbox" class="switch" id="locked" /></label>
+          <label class="row"><span>Магнитные края<small>Прилипают друг к другу и к краям экрана; Alt — без магнита</small></span><input type="checkbox" class="switch" id="snap" /></label>
+          <div class="row"><span>Расстановка по умолчанию<small>Вернуть всем виджетам исходные места и размеры</small></span><button class="btn ghost" id="resetLayout">Сбросить</button></div>
+        </div>
+        <div class="card widget-list" id="widgetToggles"></div>
+      </section>
+
+      <!-- ── Панели приложений ── -->
+      <section data-page="launchers">
+        <header><h1>Панели приложений</h1><p>Программы и сайты для быстрого запуска. Работают как панель задач: клик открывает, разворачивает или сворачивает.</p></header>
+        <div class="card">
+          <div class="row"><span>Новая панель<small>Появится на рабочем столе — добавляй значки кнопкой «+» или перетаскиванием .exe / .lnk</small></span><button class="btn" id="addLauncher">Добавить панель</button></div>
+          <div id="launcherList"></div>
+        </div>
+      </section>
+
+      <!-- ── Информационная панель ── -->
+      <section data-page="topbar">
+        <header><h1>Информационная панель</h1><p>Звук, сеть, погода, рабочие столы, время, раскладка и «сейчас играет» — сверху, снизу или сбоку экрана.</p></header>
+        <div class="card">
+          <label class="row"><span>Показывать панель</span><input type="checkbox" class="switch" id="topbarOn" /></label>
+          <div class="row"><span>Где</span>
+            <div class="seg" id="topbarPos"><button data-v="top">Сверху</button><button data-v="bottom">Снизу</button><button data-v="left">Слева</button><button data-v="right">Справа</button></div>
+          </div>
+          <label class="row"><span>Резервировать место<small>Развёрнутые окна останавливаются у панели. Без этого панель лежит поверх, а иконки и виджеты отодвигаются от неё</small></span><input type="checkbox" class="switch" id="topbarReserve" /></label>
+          <label class="row"><span>Ползунок громкости<small>Выезжает при наведении на значок звука</small></span><input type="checkbox" class="switch" id="topbarVolSlider" /></label>
+        </div>
+        <p class="hint">Колесо над громкостью — громкость, правый клик — настройки звука. Клик по раскладке переключает язык. В полноэкранных играх и видео панель прячется.</p>
+      </section>
+
+      <!-- ── Док и трей ── -->
+      <section data-page="dock">
+        <header><h1>Док и трей</h1><p>Закреплённые и запущенные приложения у любого края экрана и фоновые программы в конце дока.</p></header>
+        <div class="card">
+          <label class="row"><span>Показывать док</span><input type="checkbox" class="switch" id="dockOn" /></label>
+          <div class="row"><span>Где</span>
+            <div class="seg" id="dockPos"><button data-v="bottom">Снизу</button><button data-v="top">Сверху</button><button data-v="left">Слева</button><button data-v="right">Справа</button></div>
+          </div>
+          <div class="row"><span>Когда показывать<small>«Автоматически» — выезжает, когда курсор у края экрана рядом с доком</small></span>
+            <div class="seg" id="dockMode"><button data-v="autohide">Автоматически</button><button data-v="always">Всегда</button></div>
+          </div>
+          <label class="row"><span>Увеличение иконок под курсором</span><input type="checkbox" class="switch" id="dockMagnify" /></label>
+          <label class="row"><span>Показывать запущенные приложения<small>Не закреплённые — после закреплённых</small></span><input type="checkbox" class="switch" id="dockRunning" /></label>
+          <label class="row"><span>Скрывать панель задач Windows<small>Пока работает Haze; при выходе вернётся</small></span><input type="checkbox" class="switch" id="hideTaskbar" /></label>
+        </div>
+        <div class="card">
+          <label class="row"><span>Фоновые программы в конце дока<small>Значки трея (Telegram, Steam…); клик открывает программу</small></span><input type="checkbox" class="switch" id="shelfOn" /></label>
+          <label class="row"><span>Прозрачные, пока не наведёшь</span><input type="checkbox" class="switch" id="shelfFade" /></label>
+        </div>
+        <h3>Закреплено в доке</h3>
+        <div class="card" id="pinList"></div>
+      </section>
+
+      <!-- ── Погода ── -->
+      <section data-page="weather">
+        <header><h1>Погода</h1><p>Данные Open-Meteo, без ключа. Наружу уходят только координаты города.</p></header>
+        <div class="card">
+          <div class="row"><span>Город<small id="cityNow"></small></span>
+            <div class="actions"><input type="text" id="cityQuery" aria-label="Город для погоды" placeholder="Например, Казань…" autocomplete="off" /><button class="btn" id="citySearch">Найти</button></div>
+          </div>
+          <div id="cityResults" class="results"></div>
+          <label class="row"><span>Клик по виджету погоды<small>Открывает прогноз выбранного города</small></span><select id="weatherSite"></select></label>
+          <label class="row" id="weatherCustomRow"><span>Свой адрес<small>Подставляются {lat} {lon} {city}, только https</small></span><input type="url" id="weatherCustom" placeholder="https://…" autocomplete="off" spellcheck="false" /></label>
+        </div>
+      </section>
+
+      <!-- ── Мировое время ── -->
+      <section data-page="clocks">
+        <header><h1>Мировое время</h1><p>До четырёх городов; смещение и летнее время считаются сами.</p></header>
+        <div class="card" id="clockList"></div>
+      </section>
+
+      <!-- ── Профиль ── -->
+      <section data-page="profile">
+        <header><h1>Профиль</h1><p>Карточка с аватаром на рабочем столе.</p></header>
+        <div class="card">
+          <label class="row"><span>Отображаемое имя</span><input type="text" id="displayName" placeholder="Имя пользователя Windows…" autocomplete="off" /></label>
+          <div class="row"><span>Аватар<small id="avatarPath">аватар Windows</small></span>
+            <div class="actions"><button class="btn ghost" data-clear="avatarPath">Сбросить</button><button class="btn" data-pick="avatarPath">Выбрать…</button></div>
+          </div>
+          <div class="row"><span>Обложка<small id="bannerPath">градиент палитры</small></span>
+            <div class="actions"><button class="btn ghost" data-clear="bannerPath">Сбросить</button><button class="btn" data-pick="bannerPath">Фото…</button><button class="btn" data-pick="bannerPath" data-kind="folder">Папка…</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Система ── -->
+      <section data-page="system">
+        <header><h1>Система</h1><p>Как Haze ведёт себя в Windows.</p></header>
+        <div class="card">
+          <label class="row"><span>Запускать вместе с Windows</span><input type="checkbox" class="switch" id="autostart" /></label>
+          <label class="row"><span>Скрыть иконки рабочего стола<small>Ярлыки не удаляются — просто не видны, пока включено</small></span><input type="checkbox" class="switch" id="hideIcons" /></label>
+          <label class="row"><span>Не беспокоить<small>Без всплывающих уведомлений Windows; будильники Haze звонят</small></span><input type="checkbox" class="switch" id="dnd" /></label>
+        </div>
+        <h3>Слабый ПК</h3>
+        <div class="card">
+          <label class="row"><span>Режим для слабого компьютера<small>Все функции остаются, но обои не больше 15 кадров и в половинном разрешении, стекло виджетов без размытия, без анимаций и увеличения иконок, фоновые проверки вдвое реже, скрытые окна притормаживаются. Больше всего памяти освобождает выключение виджетов «Плеер», «Звук» и полосы звука (у них свой процесс PowerShell) и полки трея в доке</small></span><input type="checkbox" class="switch" id="lowPower" /></label>
+        </div>
+        <h3>Игровой режим</h3>
+        <div class="card">
+          <div class="row"><span>Когда включать<small>«Авто» — сам, когда игра (Steam, Epic, Riot, GOG, Ubisoft, EA, Xbox) на весь экран, и в любых полноэкранных программах</small></span>
+            <div class="seg" id="gameMode"><button data-v="auto">Авто</button><button data-v="on">Всегда</button><button data-v="off">Выкл</button></div>
+          </div>
+          <label class="row"><span>Не беспокоить во время игры</span><input type="checkbox" class="switch" id="gameDnd" /></label>
+          <div class="row"><span>Что делает<small>Прячет панель, док и виджеты, ставит обои на паузу, выключает живое стекло и фоновые опросы. После игры всё возвращается через 3 секунды (чтобы не мигало при Alt+Tab), после видео на весь экран — сразу</small></span></div>
+          <div class="row"><span>Как выйти<small><b>Ctrl+Alt+H</b> открывает настройки в любой момент, даже когда всё скрыто. Режим «Всегда» выключается и в меню значка Haze в трее (пункт «Игровой режим»)</small></span></div>
+        </div>
+      </section>
+
+      <!-- ── О Haze ── -->
+      <section data-page="about">
+        <header class="about-head"><img class="logo" src="../../../assets/icon.svg" alt="" /><div><h1>Haze</h1><p id="version"></p></div></header>
+        <div class="card">
+          <div class="row"><span>Настройки<small>Отовсюду</small></span><kbd>Ctrl + Alt + H</kbd></div>
+          <div class="row"><span>Двигать виджет без магнита</span><kbd>Alt + перетаскивание</kbd></div>
+          <div class="row"><span>Размер виджета</span><kbd>Ctrl + колесо</kbd></div>
+          <div class="row"><span>Меню виджета</span><kbd>Правый клик</kbd></div>
+        </div>
+        <div class="card">
+          <div class="row"><span>Знакомство с Haze<small>Окно «что где настраивается», как при первом запуске</small></span><button class="btn ghost" id="showWelcome">Показать</button></div>
+          <div class="row"><span>Перезапустить Haze<small>Если что-то выглядит не так</small></span><button class="btn ghost" id="relaunch">Перезапустить</button></div>
+          <div class="row"><span>Выйти из Haze<small>Панель задач, иконки и место на экране вернутся как были</small></span><button class="btn danger" id="quitApp">Выйти</button></div>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast">Сохранено</div>
+    <script type="module" src="settings.js"></script>
+  </body>
+</html>

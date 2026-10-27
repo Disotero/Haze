@@ -1,0 +1,172 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--ink);
+  user-select: none;
+  /* The page view covers everything below the 48px header. */
+  background: radial-gradient(120% 140% at 0% 0%, var(--wp-3), transparent 55%), linear-gradient(140deg, var(--wp-4), var(--wp-1));
+}
+header {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px 0 10px;
+  -webkit-app-region: drag;
+}
+button,
+input {
+  font: inherit;
+  color: inherit;
+  -webkit-app-region: no-drag;
+}
+.nav {
+  display: flex;
+  gap: 2px;
+}
+.nav button,
+.win button {
+  width: 32px;
+  height: 30px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: var(--ink-soft);
+}
+.nav button:hover:not(:disabled),
+.win button:hover {
+  background: var(--glass-strong);
+  color: var(--ink);
+}
+.nav button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.nav svg {
+  width: 17px;
+  height: 17px;
+}
+.win {
+  display: flex;
+  gap: 2px;
+}
+.win svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.win button.close:hover {
+  background: #e5534b;
+  color: #fff;
+}
+.address {
+  flex: 1;
+  min-width: 0;
+  max-width: 760px;
+  margin: 0 auto;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: var(--glass-strong);
+  box-shadow: inset 0 0 0 1px var(--glass-edge);
+  -webkit-app-region: no-drag;
+}
+.address:focus-within {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+.address img {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.address input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  font-size: 13px;
+}
+.address .title {
+  max-width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.address:focus-within .title {
+  display: none;
+}
+.loading {
+  position: fixed;
+  top: 46px;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: var(--accent);
+  transition: width 0.4s var(--ease), opacity 0.4s;
+  opacity: 0;
+}
+.loading.on {
+  width: 70%;
+  opacity: 1;
+  transition: width 8s cubic-bezier(0.1, 0.8, 0.2, 1);
+}
+
+.slim-title {
+  display: none;
+}
+/* Thin: one slim strip with the title and window buttons. */
+body[data-mode="thin"] header {
+  height: 18px;
+  padding: 0 4px 0 10px;
+}
+body[data-mode="thin"] .address,
+body[data-mode="thin"] header > .nav:first-child,
+body[data-mode="thin"] .loading {
+  display: none;
+}
+body[data-mode="thin"] .slim-title {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+body[data-mode="thin"] .nav button,
+body[data-mode="thin"] .win button {
+  width: 22px;
+  height: 16px;
+  border-radius: 6px;
+}
+body[data-mode="thin"] .nav svg {
+  width: 12px;
+  height: 12px;
+}
+body[data-mode="thin"] .win svg {
+  width: 9px;
+  height: 9px;
+}
+/* None: just a 4px grip until the pointer arrives. */
+body[data-mode="none"]:not(.peek) header {
+  height: 4px;
+  overflow: hidden;
+  opacity: 0;
+}

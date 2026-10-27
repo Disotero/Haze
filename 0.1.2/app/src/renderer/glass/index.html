@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file: data:; style-src 'self' 'unsafe-inline' file:; media-src file: data: blob: mediastream:; script-src 'self' file:; connect-src 'none'; object-src 'none'; base-uri 'none'" />
+    <title>Haze — glass</title>
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: transparent; }
+      #backdrop { position: fixed; pointer-events: none; }
+      /* Blurred at a quarter size and scaled up (see widgets.css): same look, far less GPU. */
+      #backdrop .wall-fill {
+        position: absolute; left: -40px; top: -40px;
+        width: calc((100% + 80px) / 4); height: calc((100% + 80px) / 4);
+        transform: scale(4); transform-origin: 0 0; will-change: transform;
+        object-fit: cover; border: 0; filter: blur(7.5px) saturate(1.45) brightness(1.04);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Blurred live capture of the screen, clipped to the widgets' glass. -->
+    <div id="backdrop"></div>
+    <script type="module" src="glass.js"></script>
+  </body>
+</html>
