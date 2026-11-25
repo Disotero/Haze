@@ -88,6 +88,7 @@ export class WallSource {
     this.el = null;
     this.raf = 0;
     this.syncTimer = 0;
+    this.keepTimer = 0;
     this.key = "";
     // Bumped by every set(): an older set() still awaiting must not mount.
     this.gen = 0;
@@ -136,8 +137,11 @@ export class WallSource {
   teardown() {
     cancelAnimationFrame(this.raf);
     clearInterval(this.syncTimer);
+    clearInterval(this.keepTimer);
     clearTimeout(this.slideTimer);
+    this.keepTimer = 0;
     this.raf = 0;
+    this.host.style.transform = "";
     this.gl = null;
     this.video = null;
     this.live = null;
@@ -256,6 +260,30 @@ export class WallSource {
     img.decoding = "async";
     this.host.appendChild(img);
     this.el = img;
+    this.keepPresenting();
+  }
+
+  /**
+   * Keep a still wallpaper on screen. The wallpaper layer lives inside
+   * Explorer's desktop as a layered child window, which only presents a new
+   * frame while something keeps changing: the shader and videos draw every
+   * frame, so they show, but a static picture (a single image, a slideshow
+   * between changes, an HTML page) paints once and that single frame may never
+   * reach the screen — the picture decodes into the page (its colours even
+   * reach the widgets through wallpaper:sample) yet the desktop stays on the
+   * last animation. A sub-pixel transform on the container a couple of times a
+   * second is a real change to a compositor property, so it forces a fresh
+   * frame the way a video would — imperceptible on screen, a fraction of a
+   * frame's cost, and nothing while paused (the wallpaper is covered anyway).
+   */
+  keepPresenting() {
+    clearInterval(this.keepTimer);
+    let on = false;
+    this.keepTimer = setInterval(() => {
+      if (this.paused) return;
+      on = !on;
+      this.host.style.transform = on ? "translate3d(0.02px,0,0)" : "translate3d(0,0,0)";
+    }, 400);
   }
 
   /**
@@ -277,6 +305,8 @@ export class WallSource {
       return img;
     });
     this.slides = imgs;
+    // Between changes a slideshow is a still picture too — keep it presenting.
+    this.keepPresenting();
     let front = 1;
     let shown = "";
     const tick = async () => {
@@ -393,5 +423,7 @@ export class WallSource {
     f.tabIndex = -1;
     this.host.appendChild(f);
     this.el = f;
+    // A static page (not every HTML wallpaper animates) needs the same nudge.
+    this.keepPresenting();
   }
 }
