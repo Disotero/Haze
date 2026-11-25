@@ -58,7 +58,7 @@ void main(){
   gl_FragColor = vec4(col, 1.0);
 }`;
 
-const VIDEO_EXT = /\.(mp4|webm|mov|mkv|m4v)$/i;
+const VIDEO_EXT = /\.(mp4|m4v|webm|mov|mkv|ogv|ogg)$/i;
 const HTML_EXT = /\.html?$/i;
 
 export function kindOf(wp) {
@@ -119,6 +119,13 @@ export class WallSource {
         return;
       }
       if (gen !== this.gen) return;
+      // Main refused the path (not on the allow-list): don't mount an empty
+      // <img>/<video> that would silently show nothing — say why and retry next time.
+      if (!url) {
+        console.error("[wallpaper] path not allowed by main:", wp.path);
+        if (gen === this.gen) this.key = "";
+        return;
+      }
     }
     if (kind === "shader") this.mountShader();
     else if (kind === "video") this.mountVideo(url);

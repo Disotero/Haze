@@ -318,7 +318,7 @@ $("#widgetToggles").addEventListener("change", (e) => {
 
 // ── Wallpaper ──────────────────────────────────────────────────────────────
 
-const WALL_FILE = /\.(mp4|webm|mov|mkv|m4v|gif|png|jpe?g|webp|avif|bmp|html?)$/i;
+const WALL_FILE = /\.(mp4|m4v|webm|mov|mkv|ogv|ogg|gif|apng|png|jpe?g|jfif|webp|avif|bmp|ico|svg|html?)$/i;
 
 async function pickWallpaper() {
   const p = await window.cozy.pickFile("wallpaper");

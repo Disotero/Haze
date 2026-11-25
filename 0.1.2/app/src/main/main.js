@@ -1132,11 +1132,22 @@ function runPower(action) {
 
 function registerMoreIpc() {
   ipcMain.handle("dialog:pick", async (_e, kind) => {
+    // "Все файлы" last: the named filter is only a convenience, so a picture
+    // or video in any format (and anything kindOf() falls back to <img> for)
+    // can still be chosen — the dialog otherwise greys out everything else.
+    const anyFile = { name: "Все файлы", extensions: ["*"] };
     const filters = {
       wallpaper: [
-        { name: "Обои", extensions: ["mp4", "webm", "mov", "mkv", "gif", "png", "jpg", "jpeg", "webp", "avif", "bmp", "html", "htm"] },
+        {
+          name: "Обои",
+          extensions: ["mp4", "m4v", "webm", "mov", "mkv", "ogv", "gif", "apng", "png", "jpg", "jpeg", "jfif", "webp", "avif", "bmp", "ico", "svg", "html", "htm"],
+        },
+        anyFile,
       ],
-      image: [{ name: "Изображения", extensions: ["png", "jpg", "jpeg", "webp", "avif", "gif", "bmp"] }],
+      image: [
+        { name: "Изображения", extensions: ["png", "jpg", "jpeg", "jfif", "webp", "avif", "gif", "apng", "bmp", "ico", "svg"] },
+        anyFile,
+      ],
       app: [{ name: "Приложения и ярлыки", extensions: ["exe", "lnk"] }],
       convert: [{ name: "Изображения", extensions: ["png", "jpg", "jpeg", "webp", "avif", "gif", "bmp", "ico", "svg"] }],
     }[kind];
@@ -1353,7 +1364,7 @@ function favicon(host) {
 
 // ── Widget IPC ─────────────────────────────────────────────────────────────
 
-const IMAGE_EXT = /\.(jpe?g|png|webp|gif|avif|bmp)$/i;
+const IMAGE_EXT = /\.(jpe?g|jfif|png|webp|gif|apng|avif|bmp|ico|svg)$/i;
 
 /** Which of `n` slides is up now; changes every `interval` seconds. */
 function slideIndex(n, interval) {
